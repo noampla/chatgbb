@@ -48,7 +48,7 @@
   <script>
     async function ask() {
       const question = document.getElementById('question').value;
-      const res = await fetch('/ask', {
+      const res = await fetch('https://conquer-game-server.lm.r.appspot.com/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question })
