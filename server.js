@@ -3,13 +3,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { OpenAI } = require('openai');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-app.use(cors()); // 👈 זה מה שמוסיף את התמיכה ב-CORS
+app.use(cors({
+  origin: '*', // or restrict to specific origins
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type']
+}));
 app.use(express.json());
 
 const ASSISTANT_ID = process.env.ASSISTANT_ID;
