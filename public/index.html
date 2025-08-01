@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8">
+  <title>ChatGBB - תמיד אשמת ביבי</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #111;
+    color: #f9f9f9;
+    text-align: center;
+    padding: 50px;
+  }
+
+  input {
+    padding: 10px;
+    width: 300px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: none;
+    margin-bottom: 10px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  #answer {
+    margin-top: 30px;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+</style>
+
+</head>
+<body>
+  <h1>שאל שאלה אחת בלבד 👇</h1>
+  <input id="question" type="text" placeholder="מה שבא לך לשאול...">
+  <button onclick="ask()">שאל</button>
+  <p id="answer"></p>
+
+  <script>
+    async function ask() {
+      const question = document.getElementById('question').value;
+      const res = await fetch('/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const data = await res.json();
+      document.getElementById('answer').innerText = data.answer || 'שגיאה בתשובה';
+    }
+  </script>
+</body>
+</html>
