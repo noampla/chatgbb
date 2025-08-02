@@ -1,20 +1,14 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>צ'אט ג'י-ביבי</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap" rel="stylesheet"/>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
+    /* כללי */
+    * { box-sizing: border-box; margin: 0; padding: 0 }
+    html, body {
       min-height: 100vh;
       direction: rtl;
       font-family: 'Rubik', sans-serif;
@@ -22,310 +16,165 @@
       color: #222;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
     }
-
-    .container,
-    .card {
-      min-height: 0;
+    /* כפתור מצב חשוך */
+    #darkModeToggle {
+      position: absolute; top: 16px; left: 16px;
+      padding: 6px 12px; font-size: 12px;
+      border: none; border-radius: 20px;
+      background: #222; color: #fff;
+      cursor: pointer; z-index: 999;
+      transition: background .3s;
     }
-
+    #darkModeToggle:hover { background: #444 }
+    /* כרטיס צ'אט */
     .container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
+      flex: 1; display: flex;
+      justify-content: center; align-items: flex-start;
       padding: 20px;
     }
-
     .card {
       background: #fff;
-      width: 100%;
-      max-width: 380px;
+      width: 100%; max-width: 380px;
       border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      display: flex;
-      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      display: flex; flex-direction: column;
     }
-
     header {
-      padding: 24px;
-      text-align: center;
+      padding: 24px; text-align: center;
     }
-
     header h1 {
-      font-size: 24px;
-      color: #1a3c6e;
-      line-height: 1.3;
+      font-size: 24px; color: #1a3c6e;
       margin-bottom: 12px;
     }
-
     header .tagline {
-      font-size: 16px;
-      color: #444;
-      line-height: 1.4;
-      margin-bottom: 12px;
+      font-size: 16px; color: #444;
+      line-height: 1.4; margin-bottom: 12px;
     }
-
     header h2 {
-      font-size: 18px;
-      color: #555;
+      font-size: 18px; color: #555;
     }
-
     .top {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding: 0 24px;
-      min-height: 0;
+      flex: 1; display: flex; flex-direction: column;
+      padding: 0 24px 24px;
     }
-
-    /* התיבה קבועה ברוחב, גלילה אנכית */
-    .top textarea#question {
-      flex: 0;
-      width: 100%;
-      min-height: 48px;
-      max-height: 100px;
-      padding: 14px;
-      font-size: 16px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      margin-bottom: 16px;
-      direction: rtl;
-      text-align: right;
-      resize: none;
-      overflow-y: auto;
-      line-height: 1.4;
-      white-space: pre-wrap;
-      word-break: break-word;
+    #question {
+      width: 100%; padding: 14px;
+      font-size: 16px; border: 1px solid #ddd;
+      border-radius: 8px; margin-bottom: 16px;
+      resize: none; line-height: 1.4;
     }
-
-    .top button#askBtn {
-      flex: 0;
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      background: #007bff;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
+    #askBtn {
+      width: 100%; padding: 14px;
+      font-size: 16px; background: #007bff;
+      color: #fff; border: none; border-radius: 8px;
+      cursor: pointer; transition: background .3s;
       margin-bottom: 16px;
     }
-
-    .top button#askBtn:hover {
-      background: #0056b3;
-    }
-
+    #askBtn:hover { background: #0056b3 }
     #answer {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      margin-bottom: 12px;
-      padding: 16px;
-      background: #eef2f7;
-      border-radius: 8px;
-      font-size: 16px;
-      line-height: 1.5;
-      text-align: center;
-      display: none;
+      flex: 1; padding: 16px;
+      background: #eef2f7; border-radius: 8px;
+      font-size: 16px; line-height: 1.5;
+      text-align: center; display: none;
+      margin-bottom: 16px;
     }
-
     .spinner {
-      width: 24px;
-      height: 24px;
+      width: 24px; height: 24px;
       border: 4px solid #eee;
       border-top-color: #007bff;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
+      border-radius: 50%; animation: spin 1s linear infinite;
       margin: 0 auto 8px;
     }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg) } }
     #newQuestion {
-      flex: 0;
-      display: none;
-      background: transparent;
-      color: #007bff;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      text-decoration: underline;
-      margin: 0 auto 16px;
+      display: none; background: transparent;
+      color: #007bff; border: none;
+      font-size: 14px; cursor: pointer;
+      text-decoration: underline; margin: 0 auto;
     }
-
+    /* פוטר */
     footer {
-      padding: 10px 20px;
-      text-align: center;
-      font-size: 14px;
-      color: #666;
+      padding: 10px 20px; text-align: center;
+      font-size: 14px; color: #666;
     }
-
-    footer p {
-      margin-bottom: 6px;
-    }
-
+    footer p { margin-bottom: 6px }
     footer a {
-      color: #007bff;
-      text-decoration: none;
+      color: #007bff; text-decoration: none;
       margin: 0 4px;
     }
-
-    footer a:hover {
-      text-decoration: underline;
+    footer a:hover { text-decoration: underline }
+    /* סטטיסטיקות קומפקטיות */
+    .stats-row {
+      display: flex; justify-content: center;
+      gap: 8px; margin: 12px 0;
     }
-
-    @media (min-width: 600px) {
-      .card {
-        max-width: 420px;
-      }
-
-      header h1 {
-        font-size: 28px;
-      }
-
-      header .tagline {
-        font-size: 18px;
-      }
-
-      header h2 {
-        font-size: 20px;
-      }
-
-      .top textarea#question,
-      .top button#askBtn {
-        font-size: 18px;
-        padding: 16px;
-      }
-
-      #answer {
-        font-size: 18px;
-      }
+    .stat-pill {
+      display: inline-flex; align-items: center;
+      background: #fff; padding: 6px 12px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      font-size: 14px; color: #333;
+      line-height: 1; white-space: nowrap;
+      transition: transform .2s;
     }
-
+    .stat-pill:hover { transform: translateY(-2px) }
+    .stat-pill span {
+      font-weight: 700; color: #007bff;
+      margin: 0 4px;
+    }
+    /* מצב חשוך */
     body.dark-mode {
-      background-color: #0d0d0d;
-      color: #f0f0f0;
+      background: #0d0d0d; color: #f0f0f0;
     }
-
-    body.dark-mode .card {
-      background: #1a1a1a;
-      color: #f0f0f0;
-      box-shadow: 0 8px 24px rgba(255, 255, 255, 0.1);
-    }
-
-    body.dark-mode header h1 {
-      color: #00bcd4;
-      /* צבע כחול טורקיזי בולט */
-    }
-
-    body.dark-mode header .tagline,
-    body.dark-mode header h2 {
-      color: #ddd;
-    }
-
-    body.dark-mode textarea#question {
-      background-color: #2a2a2a;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    body.dark-mode #answer {
-      background-color: #333;
-      color: #fff;
-    }
-
-    body.dark-mode button#askBtn {
-      background: #e91e63;
-      color: #fff;
-    }
-
-    body.dark-mode button#askBtn:hover {
-      background: #c2185b;
-    }
-
-    body.dark-mode footer {
-      color: #aaa;
-    }
-
-    body.dark-mode footer a {
-      color: #80d8ff;
-    }
-
-    #darkModeToggle {
-      background: #222;
-      color: #fff;
-      border: none;
-      padding: 6px 12px;
-      font-size: 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background 0.3s;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    #darkModeToggle:hover {
-      background: #444;
-    }
-
-    /* מצב דארק - צבע הפוך */
     body.dark-mode #darkModeToggle {
-      background: #f0f0f0;
-      color: #111;
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+      background: #f0f0f0; color: #111;
     }
-
     body.dark-mode #darkModeToggle:hover {
       background: #e0e0e0;
     }
+    body.dark-mode .card {
+      background: #1a1a1a;
+      box-shadow: 0 8px 24px rgba(255,255,255,0.1);
+      color: #f0f0f0;
+    }
+    body.dark-mode header h1 { color: #00bcd4 }
+    body.dark-mode header .tagline,
+    body.dark-mode header h2 { color: #ddd }
+    body.dark-mode #question {
+      background: #2a2a2a; color: #fff;
+      border: 1px solid #555;
+    }
+    body.dark-mode #answer {
+      background: #333; color: #fff;
+    }
+    body.dark-mode #askBtn {
+      background: #e91e63;
+    }
+    body.dark-mode #askBtn:hover {
+      background: #c2185b;
+    }
+    body.dark-mode footer { color: #aaa }
+    body.dark-mode footer a { color: #80d8ff }
+    body.dark-mode .stat-pill {
+      background: #222; color: #eee;
+      box-shadow: 0 2px 6px rgba(255,255,255,0.1);
+    }
+    body.dark-mode .stat-pill span {
+      color: #80d8ff;
+    }
   </style>
-  <!-- Favicon -->
-  <link rel="icon" type="image/x-icon" href="img/chatgbb.ico" />
-  <link rel="shortcut icon" href="img/chatgbb.ico" />
-
-  <!-- Meta description -->
-  <meta name="description" content="Ask any question, any topic — Chat G-BB will somehow lead it back to Bibi." />
-
-  <!-- Open Graph for social sharing -->
-  <meta property="og:title" content="Chat G-BB" />
-  <meta property="og:description" content="Ask anything — somehow, it all leads back to Bibi." />
-  <meta property="og:image" content="https://chatgbb-project.web.app/img/chatgbb.png" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://chatgbb-project.web.app/" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Chat G-BB" />
-  <meta name="twitter:description" content="Ask anything — somehow, it all leads back to Bibi." />
-  <meta name="twitter:image" content="https://chatgbb-project.web.app/img/chatgbb.png" />
-
 </head>
-
 <body>
 
-  <div class="container">
-    <button id="darkModeToggle" onclick="toggleDarkMode()" style="
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  padding: 6px 12px;
-  font-size: 12px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  z-index: 999;
-  transition: background 0.3s;">🌙 Dark Mode - Try Me</button>
+  <!-- Dark Mode Toggle -->
+  <button id="darkModeToggle" onclick="toggleDarkMode()">🌙 Dark Mode – Try Me</button>
 
+  <!-- כרטיס הצ'אט -->
+  <div class="container">
     <div class="card">
       <header>
-        <img id="logoImg" src="img/chatgbb.png" alt="Chat G-BB logo"
-          style="width: 100px; height: auto; margin-bottom: 12px;" />
+        <img id="logoImg" src="img/chatgbb.png" alt="Chat G-BB logo" style="width:100px; margin-bottom:12px"/>
         <h1>צ'אט ג'י-ביבי</h1>
         <p class="tagline">
           שאל כל שאלה.<br>
@@ -335,10 +184,8 @@
         </p>
         <h2>שאל אותי על הכול.</h2>
       </header>
-
       <div class="top">
-        <textarea style="font-family: 'Rubik', sans-serif;" id="question" placeholder="מה תרצה לשאול?"
-          rows="2"></textarea>
+        <textarea style="font-family: 'Rubik', sans-serif;" id="question" placeholder="מה תרצה לשאול?" rows="2"></textarea>
         <button id="askBtn" onclick="ask()">שאל</button>
         <div id="answer"></div>
         <button id="newQuestion" onclick="reset()">שאל משהו חדש</button>
@@ -346,6 +193,13 @@
     </div>
   </div>
 
+  <!-- סטטיסטיקות קומפקטיות -->
+  <div class="stats-row">
+    <div class="stat-pill"><span id="daysInOffice">…</span>ימים בשלטון</div>
+    <div class="stat-pill"><span id="indictments">…</span>כתבי אישום</div>
+  </div>
+
+  <!-- פוטר -->
   <footer>
     <p>פותח עי שלומי זווין, מומחה AI</p>
     <a href="https://www.tiktok.com/@shlomizevin" target="_blank">טיקטוק</a> |
@@ -354,17 +208,30 @@
   </footer>
 
   <script>
+    // מצב חשוך
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const btn = document.getElementById('darkModeToggle');
+      const logo = document.getElementById('logoImg');
+      if (document.body.classList.contains('dark-mode')) {
+        btn.textContent = '☀️ Back to Bibi';
+        logo.src = 'img/chatgbb-dark-white.png';
+      } else {
+        btn.textContent = '🌙 Dark Mode – Try Me';
+        logo.src = 'img/chatgbb.png';
+      }
+    }
+
+    // פונקציית השאלה
     async function ask() {
       const btn = document.getElementById('askBtn');
       const answerDiv = document.getElementById('answer');
       const q = document.getElementById('question').value.trim();
       if (!q) return;
-
       answerDiv.innerHTML = '<div class="spinner"></div><div>חושב…</div>';
       answerDiv.style.display = 'block';
       btn.disabled = true;
 
-      // רשימת המשפטים שיתחלפו
       const hints = [
         'נתניהו הצביע 4 פעמים בעד ההתנתקות.',
         '“החמאס הוא נכס” – זה הוא אמר, לא אני.',
@@ -378,42 +245,34 @@
         'הוא טיפח את החמאס, שיסע את העם, והחריב את הדמוקרטיה.'
       ];
 
-      let timedOut = false;
-      let hintInterval;
-
+      let hintInterval, timedOut = false;
       const timeoutId = setTimeout(() => {
         timedOut = true;
-
         answerDiv.innerHTML = `
-        <div class="spinner"></div>
-        <div>חושב… אם זה לוקח זמן – ביבי אשם.</div>
-        <div>ובינתיים — הנה כמה עובדות שאני אמשיך להזכיר, כל עוד זורם חשמל ברשתותיי:</div>
-        <div id="hint"><em>${hints[0]}</em></div>
-      `;
-
-        let hintIndex = 1;
+          <div class="spinner"></div>
+          <div>חושב… אם זה לוקח זמן – ביבי אשם.</div>
+          <div>ובינתיים — הנה כמה עובדות:</div>
+          <div id="hint"><em>${hints[0]}</em></div>`;
+        let idx = 1;
         hintInterval = setInterval(() => {
-          const hintElement = document.getElementById('hint');
-          if (hintElement) {
-            hintElement.textContent = hints[hintIndex];
-            hintIndex = (hintIndex + 1) % hints.length;
-          }
+          const h = document.getElementById('hint');
+          if (h) h.textContent = hints[idx = (idx+1)%hints.length];
         }, 3000);
       }, 2000);
-
 
       try {
         const res = await fetch('https://conquer-game-server.lm.r.appspot.com/ask', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ question: q })
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({question: q})
         });
         const data = await res.json();
         clearTimeout(timeoutId);
-
+        clearInterval(hintInterval);
         answerDiv.textContent = data.answer || 'שגיאה בתשובה – ביבי אשם';
       } catch {
         clearTimeout(timeoutId);
+        clearInterval(hintInterval);
         answerDiv.textContent = 'שגיאה בתקשורת – ביבי אשם';
       } finally {
         btn.disabled = false;
@@ -421,6 +280,7 @@
       }
     }
 
+    // איפוס
     function reset() {
       document.getElementById('question').value = '';
       const ans = document.getElementById('answer');
@@ -428,26 +288,16 @@
       ans.textContent = '';
       document.getElementById('newQuestion').style.display = 'none';
     }
-  </script>
-  <script>
-    function toggleDarkMode() {
-      const body = document.body;
-      const btn = document.getElementById('darkModeToggle');
-      const logo = document.getElementById('logoImg');
 
-      body.classList.toggle('dark-mode');
-
-      if (body.classList.contains('dark-mode')) {
-        btn.textContent = "☀️ Back to Bibi";
-        logo.src = "img/chatgbb-dark-white.png";
-      } else {
-        document.title = "צ'אט גי-ביבי";
-        btn.textContent = "🌙 Dark Mode - Try Me";
-        logo.src = "img/chatgbb.png";
-      }
+    // עדכון סטטיסטיקות
+    function updateStats() {
+      const start = new Date('2022-12-29');
+      const days = Math.floor((new Date() - start)/(1000*60*60*24));
+      document.getElementById('daysInOffice').innerText = (days + 5589);
+      const count = 4;
+      document.getElementById('indictments').innerText = count;
     }
+    updateStats();
   </script>
-
 </body>
-
 </html>

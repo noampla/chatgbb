@@ -7,14 +7,45 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(express.static('public'));
+const ALLOWED_ORIGIN = 'https://chatgbb-project.web.app';
 
+// Strict CORS policy: only allow your production website
 app.use(cors({
-  origin: '*', // or restrict to specific origins
+  origin: function (origin, callback) {
+    if (origin === ALLOWED_ORIGIN) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type']
 }));
+
+// Additional protection: block non-browser tools (like Postman, curl)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  const referer = req.headers.referer || '';
+  const userAgent = req.headers['user-agent'] || '';
+
+  const isAllowed =
+    origin === ALLOWED_ORIGIN ||
+    referer.startsWith(ALLOWED_ORIGIN);
+
+  const isSuspiciousTool =
+    userAgent.toLowerCase().includes('postman') ||
+    userAgent.toLowerCase().includes('curl') ||
+    !origin;
+
+  if (isAllowed && !isSuspiciousTool) {
+    return next();
+  }
+
+  return res.status(403).json({ error: 'Access denied' });
+});
+
+app.use(bodyParser.json());
+app.use(express.static('public'));
 app.use(express.json());
 
 const ASSISTANT_ID = process.env.ASSISTANT_ID;
